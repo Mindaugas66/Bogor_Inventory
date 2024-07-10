@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block "title" %}HOME{% endblock %}
+
+{% block 'content' %}
+  <h1>Some info:</h1>
+  <ul>
+    <li><strong>Total Orders:</strong> {{ total_orders }}</li>
+    <li><strong>Total Products:</strong> {{ total_products }}</li>
+    <li><strong>Total Clients:</strong> {{ total_clients }}</li>
+  </ul>
+{% endblock %}

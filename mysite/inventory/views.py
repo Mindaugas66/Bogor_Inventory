@@ -10,4 +10,4 @@ def index(request):
         'total_products': total_products,
         'total_clients': total_clients
     }
-    return render(request, 'inventory/index.html', context=context)
+    return render(request, 'index.html', context=context)
