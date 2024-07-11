@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from .models import SatinSilk, Decorations, Materials, Products, Clients, Orders, OrderLines, Profits
+from .models import SatinSilk, Decorations, Materials, Products, Clients, Orders, OrderLines
 from django.shortcuts import render
 def index(request):
     total_orders = Orders.objects.all().count()

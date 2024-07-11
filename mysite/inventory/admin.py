@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SatinSilk, Decorations, Materials, Products, OrderLines, Clients, Orders, Profits
+from .models import SatinSilk, Decorations, Materials, Products, OrderLines, Clients, Orders
 
 
 # Register your models here.
@@ -9,7 +9,7 @@ class SatinSilkAdmin(admin.ModelAdmin):
 
 
 class DecorationsAdmin(admin.ModelAdmin):
-    list_display = ['deco_name', "remaining_stock", "sell_price"]
+    list_display = ['deco_name', "remaining_stock", 'cost_per_item', "sell_price"]
 
 
 class MaterialsAdmin(admin.ModelAdmin):
@@ -21,7 +21,7 @@ class ProductsAdmin(admin.ModelAdmin):
 
 
 class OrderLinesAdmin(admin.ModelAdmin):
-    list_display = ["product_id", "deco_id", "quantity", 'price']
+    list_display = ["product_id", "deco_id", "quantity", 'price', 'cost_to_make']
 
 class OrderlinesInLine(admin.TabularInline):
     model = OrderLines
@@ -34,7 +34,7 @@ class ClientsAdmin(admin.ModelAdmin):
 
 
 class OrdersAdmin(admin.ModelAdmin):
-    list_display = ["client_id", "order_status", "total"]
+    list_display = ["client_id", "order_status", "order_total", "total_cost_to_make", "profit_made"]
     inlines = [OrderlinesInLine]
 
 
@@ -49,4 +49,3 @@ admin.site.register(Products, ProductsAdmin)
 admin.site.register(OrderLines, OrderLinesAdmin)
 admin.site.register(Clients, ClientsAdmin)
 admin.site.register(Orders, OrdersAdmin)
-admin.site.register(Profits, ProfitsAdmin)
