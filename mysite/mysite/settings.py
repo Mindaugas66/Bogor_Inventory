@@ -81,7 +81,8 @@ DATABASES = {
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'inventory/media')
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 MEDIA_URL = '/media/'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -116,7 +117,6 @@ LOGGING = {
     },
 }
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     BASE_DIR / "inventory" / "static",
 ]
