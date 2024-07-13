@@ -23,6 +23,7 @@ class ProductsAdmin(admin.ModelAdmin):
 class OrderLinesAdmin(admin.ModelAdmin):
     list_display = ["product_id", "deco_id", "quantity", 'price', 'cost_to_make']
 
+
 class OrderlinesInLine(admin.TabularInline):
     model = OrderLines
     extra = 0
@@ -34,8 +35,14 @@ class ClientsAdmin(admin.ModelAdmin):
 
 
 class OrdersAdmin(admin.ModelAdmin):
-    list_display = ["client_id", "order_status", "order_total", "total_cost_to_make", "profit_made"]
+    list_display = ["formatted_order_date", "client_id", "order_status", "order_total", "total_cost_to_make", "profit_made"]
     inlines = [OrderlinesInLine]
+
+    def formatted_order_date(self, obj):
+        return obj.order_date.strftime('%Y-%m-%d')
+
+    # Optionally, you can add a short description for the column header
+    formatted_order_date.short_description = 'Order Date'
 
 
 class ProfitsAdmin(admin.ModelAdmin):

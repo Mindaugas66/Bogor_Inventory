@@ -3,190 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Bogor.lt Dashboard{% endblock %}</title>
+    <title>{% block title %}Order{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
         }
-
-        .content {
-            flex: 1;
+        .navbar-custom {
+            background-color: #222529;
         }
-
-        .navbar-brand {
-            font-weight: bold;
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav .nav-link,
+        .navbar-custom .navbar-text {
+            color: #E5A124;
         }
-
-        .nav-link {
-            font-family: 'Arial', sans-serif;
+        .navbar-custom .navbar-nav .nav-item .bi {
+            color: #E5A124;
         }
-
         .sidebar {
-            background-color: #212529;
-            padding-top: 20px;
-            color: #fff;
-            width: 200px;
-            height: 100vh;
             position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            background-color: #222529;
+            padding-top: 20px;
         }
-
-        .sidebar .nav-link {
-            color: #adb5bd;
+        .sidebar a {
+            color: #E5A124;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #E5A124;
+            color: #222529;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #222529;
+            color: #E5A124;
+            text-align: center;
+            padding: 10px;
+        }
+        .dropdown-menu-custom {
+            background-color: #222529;
+            border: none;
+        }
+        .dropdown-menu-custom .dropdown-item {
+            color: #E5A124;
             display: flex;
             align-items: center;
-            padding: 10px 15px;
-            font-size: 14px;
         }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: #fff;
-            background-color: #343a40;
-            border-radius: 5px;
-        }
-
-        .sidebar .nav-link i {
+        .dropdown-menu-custom .dropdown-item i {
             margin-right: 10px;
         }
-
-        .sidebar .nav-header {
-            font-size: 12px;
-            color: #6c757d;
-            text-transform: uppercase;
-            margin: 10px 15px;
-            padding: 10px 0;
-            border-bottom: 1px solid #343a40;
+        .dropdown-menu-custom .dropdown-item:hover,
+        .dropdown-menu-custom .dropdown-item:focus {
+            background-color: #E5A124;
+            color: #222529;
         }
-
-        .sidebar .nav-item {
-            margin-bottom: 10px;
-        }
-
-        .sidebar .nav-link .badge {
-            background-color: #28a745;
-            color: #fff;
-            margin-left: auto;
-            font-size: 10px;
-        }
-
-        .sidebar .nav-link .badge.new {
-            background-color: #ff6f61;
-            margin-left: auto;
-            font-size: 10px;
-        }
-
-        .sidebar .nav-section {
-            padding-left: 15px;
-        }
-
-        .main {
-            padding: 20px;
-            margin-left: 220px; /* Adjust according to the sidebar width */
-        }
-
-        .content-box {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .footer {
-            background-color: #212529;
-            color: #fff;
-            text-align: center;
-            padding: 1rem 0;
-        }
-
-        .navbar-nav .nav-item .nav-link svg {
-            margin-right: 5px;
+        .dropdown-menu-custom .dropdown-item:hover i,
+        .dropdown-menu-custom .dropdown-item:focus i {
+            color: #222529;
         }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="http://www.bogor.lt">Bogor.lt</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto align-items-center">
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <a class="navbar-brand" href="https://bogor.lt">Bogor.lt</a>
+    <div class="collapse navbar-collapse justify-content-end">
+        <ul class="navbar-nav">
             {% if user.is_authenticated %}
-            <li class="nav-item">
-                <a class="nav-link d-flex align-items-center" href="#">
-                    <i class="bi bi-person-circle"></i>
-                    {{ user.get_username }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button class="btn btn-link nav-link" type="submit">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </button>
-                </form>
-            </li>
-            {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-person-fill" style="font-size: 1.5rem; margin-right: 5px;"></i>
+                        {{ user.get_username }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profile</a>
+                        <form method="post" action="{% url 'logout' %}" class="w-100">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                        </form>
+                    </div>
+                </li>
             {% endif %}
         </ul>
     </div>
 </nav>
 
-<div class="container-fluid content">
-    <div class="row">
-        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-            <div class="sidebar-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="bi bi-house-door"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-basket"></i> Orders
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-box-seam"></i> Inventory
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-bar-chart-line"></i> Reports
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 main">
-            <div class="content-box">
-                {% block 'content' %}
-                {% endblock %}
-            </div>
-        </main>
-    </div>
+<div class="sidebar">
+    <a href="">
+        <i class="bi bi-house"></i> Dashboard
+    </a>
+    <a href="">
+        <i class="bi bi-cart"></i> Orders
+    </a>
+    <a href="">
+        <i class="bi bi-box"></i> Inventory
+    </a>
+    <a href="">
+        <i class="bi bi-graph-up"></i> Reports
+    </a>
 </div>
 
-<footer class="footer mt-auto py-3">
-    <div class="container">
-        <span class="text-muted">© 2024 My Business</span>
-    </div>
+<div class="content">
+    {% block 'content' %}
+    {% endblock %}
+</div>
+
+<footer class="footer">
+    &copy; {{ year }} Bogor.lt
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.js"></script>
+
 </body>
 </html>
