@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Order{% endblock %}
+
+{% block 'content' %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+        overflow: hidden; /* Prevent scrolling */
+    }
+
+    .form-container {
+        background-color: #ffffff;
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        height: calc(100vh - 60px); /* Make it fill the viewport height */
+        overflow-y: auto; /* Scroll within the container */
+    }
+
+    .form-container h2 {
+        text-align: center;
+        color: #222529;
+        margin-bottom: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        flex: 1;
+        margin-right: 15px;
+    }
+
+    .form-group:last-child {
+        margin-right: 0;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #495057;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+        border-color: #E5A124;
+        outline: none;
+        box-shadow: 0 0 5px rgba(229, 161, 36, 0.25);
+    }
+
+    .form-group select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .btn-primary {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        color: #ffffff;
+        background-color: #222529;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        margin-top: 20px; /* Added margin to create space */
+        text-decoration: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #E5A124;
+        color: #222529;
+        text-decoration: none; /* Remove underline on hover */
+    }
+
+    .order-lines {
+        margin-top: 20px;
+    }
+
+    .order-lines h3 {
+        color: #222529;
+        margin-bottom: 15px;
+    }
+
+    .order-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #dee2e6;
+        padding-top: 15px;
+        margin-top: 15px;
+    }
+
+    .order-line .form-group {
+        flex: 1;
+        margin-right: 15px;
+    }
+
+    .order-line .form-group:last-child {
+        margin-right: 0;
+    }
+
+    .add-line-btn, .delete-line-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        color: #ffffff;
+    }
+
+    .add-line-btn {
+        background-color: #E5A124;
+        margin-bottom: 10px; /* Added margin to create space */
+    }
+
+    .add-line-btn:hover {
+        background-color: #222529;
+        color: #E5A124;
+        text-decoration: none; /* Remove underline on hover */
+    }
+
+    .delete-line-btn {
+        background-color: #dc3545;
+        margin-top: 5px;
+    }
+
+    .delete-line-btn:hover {
+        background-color: #c82333;
+        text-decoration: none; /* Remove underline on hover */
+    }
+</style>
+
+<div class="form-container">
+    <h2>Add New Order</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                {{ client_form.first_name.label_tag }}
+                {{ client_form.first_name }}
+            </div>
+            <div class="form-group">
+                {{ client_form.last_name.label_tag }}
+                {{ client_form.last_name }}
+            </div>
+            <div class="form-group">
+                {{ order_form.order_date.label_tag }}
+                {{ order_form.order_date }}
+            </div>
+            <div class="form-group">
+                {{ order_form.order_status.label_tag }}
+                {{ order_form.order_status }}
+            </div>
+        </div>
+        <div class="order-lines">
+            <h3>Order Lines</h3>
+            {{ formset.management_form }}
+            <div id="order-lines-container">
+                {% for form in formset %}
+                    <div class="order-line">
+                        <div class="form-group">
+                            {{ form.id }}  <!-- Include hidden id field -->
+                            {{ form.product_id.label_tag }}
+                            {{ form.product_id }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.quantity.label_tag }}
+                            {{ form.quantity }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.deco_id.label_tag }}
+                            {{ form.deco_id }}
+                        </div>
+                        <a href="#" class="delete-line-btn">Delete Line</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <a href="#" id="add-line-btn" class="add-line-btn">Add Order Line</a>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Order</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const addLineBtn = document.getElementById("add-line-btn");
+        const orderLinesContainer = document.getElementById("order-lines-container");
+        let formIdx = {{ formset.total_form_count }};
+
+        addLineBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const newForm = document.createElement("div");
+            newForm.classList.add("order-line");
+            newForm.innerHTML = `
+                <div class="form-group">
+                    <label for="id_lines-${formIdx}-product_id">Product id:</label>
+                    <input type="text" name="lines-${formIdx}-product_id" maxlength="200" class="form-control" id="id_lines-${formIdx}-product_id">
+                </div>
+                <div class="form-group">
+                    <label for="id_lines-${formIdx}-quantity">Quantity:</label>
+                    <input type="number" name="lines-${formIdx}-quantity" class="form-control" id="id_lines-${formIdx}-quantity">
+                </div>
+                <div class="form-group">
+                    <label for="id_lines-${formIdx}-deco_id">Deco id:</label>
+                    <input type="text" name="lines-${formIdx}-deco_id" maxlength="200" class="form-control" id="id_lines-${formIdx}-deco_id">
+                </div>
+                <input type="hidden" name="lines-${formIdx}-id" id="id_lines-${formIdx}-id">
+                <input type="hidden" name="lines-${formIdx}-DELETE" id="id_lines-${formIdx}-DELETE">
+                <a href="#" class="delete-line-btn">Delete Line</a>
+            `;
+            orderLinesContainer.appendChild(newForm);
+            formIdx++;
+            document.getElementById("id_lines-TOTAL_FORMS").value = formIdx;
+        });
+
+        orderLinesContainer.addEventListener("click", function (e) {
+            if (e.target.classList.contains("delete-line-btn")) {
+                e.preventDefault();
+                const deleteInput = e.target.previousElementSibling;
+                deleteInput.value = 'on';  // Mark this form for deletion
+                e.target.closest(".order-line").style.display = 'none';  // Hide the form in the UI
+            }
+        });
+    });
+</script>
+{% endblock %}

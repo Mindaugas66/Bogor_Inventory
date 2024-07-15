@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block "title" %}Delete Order{% endblock%}
+{% block 'content' %}
+<div class="content-section">
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <h2>Delete order {{ instance.id }}?</h2>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-danger" type="submit">YES</button>
+            <a class="btn btn-outline-secondary" href="/myorders">NO</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
