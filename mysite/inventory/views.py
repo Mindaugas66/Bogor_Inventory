@@ -6,10 +6,13 @@ import datetime
 from django.shortcuts import redirect
 from .models import SatinSilk, Decorations, Materials, Products, Clients, Orders, OrderLines
 from django.shortcuts import render
+from django.core.paginator import Paginator
+
 
 @login_required(login_url='/accounts/login/')
 def redirect_to_dashboard(request):
     return redirect('index')
+
 
 @login_required(login_url='/accounts/login/')
 def index(request):
@@ -46,7 +49,8 @@ def index(request):
 
     # Calculate number of orders per day for the current week
     start_of_week = now - datetime.timedelta(days=now.weekday())
-    orders_data = Orders.objects.filter(order_status='c', order_date__gte=start_of_week).values('order_date').annotate(order_count=Count('id'))
+    orders_data = Orders.objects.filter(order_status='c', order_date__gte=start_of_week).values('order_date').annotate(
+        order_count=Count('id'))
 
     # Prepare data for the chart, ensuring all days of the week are included
     orders_dict = {order['order_date'].strftime('%A'): order['order_count'] for order in orders_data}
@@ -70,3 +74,15 @@ def index(request):
         'year': current_year,
     }
     return render(request, 'index.html', context=context)
+
+
+@login_required(login_url='/accounts/login/')
+def orders(request):
+    orders = Orders.objects.all().order_by('-order_date')
+    paginator = Paginator(orders, per_page=15)
+    page_number = request.GET.get("page")
+    paged_orders = paginator.get_page(page_number)
+    context = {
+        "orders": paged_orders,
+    }
+    return render(request, template_name="orders.html", context=context)

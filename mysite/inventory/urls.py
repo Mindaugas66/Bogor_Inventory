@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.redirect_to_dashboard, name='redirect_to_dashboard'),  # Add this line
     path('dashboard/', views.index, name='index'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('orders/', views.orders, name='orders'),
 ]

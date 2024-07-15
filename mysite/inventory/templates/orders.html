@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Orders{% endblock %}
+
+{% block 'content' %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+    }
+
+    .new-order-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 20px 0;
+        font-size: 1rem;
+        color: #222529;
+        background-color: #E5A124;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .new-order-btn:hover {
+        background-color: #222529;
+        color: #E5A124;
+        text-decoration: none;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border-collapse: separate;
+        border-spacing: 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+
+    .table th,
+    .table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        background-color: #222529;
+        color: #ffffff;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .badge {
+        padding: 0.5em 1em;
+        font-size: 0.75rem;
+        border-radius: 12px;
+        text-align: center;
+        color: #fff;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+    }
+
+    .badge-primary {
+        background-color: #007bff;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+    }
+
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.25em 0.5em;
+        margin: 0.1em;
+        border-radius: 4px;
+    }
+
+    .btn-outline-primary {
+        color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+
+    .btn-outline-danger {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: #ffffff;
+    }
+
+    .btn-outline-secondary {
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #ffffff;
+    }
+
+    .bi-pencil,
+    .bi-trash,
+    .bi-eye {
+        font-size: 1rem;
+    }
+
+    .actions-column {
+        width: 200px; /* Adjusted width to reduce unused space */
+        text-align: center;
+    }
+</style>
+
+<a href="#" class="new-order-btn">New Order</a>
+<table class="table table-hover table-bordered">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Order ID</th>
+        <th scope="col">Client</th>
+        <th scope="col">Order Date</th>
+        <th scope="col">Total</th>
+        <th scope="col">Status</th>
+        <th scope="col" class="actions-column">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.client_id }}</td>
+        <td>{{ order.order_date }}</td>
+        <td>{{ order.order_total }} €</td>
+        <td>
+            <span class="badge
+            {% if order.order_status == 'c' %}badge-success
+            {% elif order.order_status == 'i' %}badge-primary
+            {% elif order.order_status == 'x' %}badge-danger
+            {% endif %}">
+            {{ order.get_order_status_display }}
+            </span>
+        </td>
+        <td class="actions-column">
+            <a href="#" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-eye"></i>
+            </a>
+            <a href="#" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <a href="#" class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-trash"></i>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
