@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Add New Decoration{% endblock %}
+{% block 'content' %}
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h2 class="card-title text-center text-primary">Add New Decoration</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.deco_name.label_tag }}
+                    {{ form.deco_name|add_class:"form-control form-control-pill" }}
+                    {{ form.deco_name.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.remaining_stock.label_tag }}
+                    {{ form.remaining_stock|add_class:"form-control form-control-pill" }}
+                    {{ form.remaining_stock.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.cost_per_item.label_tag }}
+                    {{ form.cost_per_item|add_class:"form-control form-control-pill" }}
+                    {{ form.cost_per_item.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.sell_price.label_tag }}
+                    {{ form.sell_price|add_class:"form-control form-control-pill" }}
+                    {{ form.sell_price.errors }}
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary shadow-sm">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    .card {
+        border-radius: 10px;
+        background-color: #fff;
+    }
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .btn-primary {
+        background-color: #E5A124;
+        border-color: #E5A124;
+        border-radius: 50px;
+    }
+    .btn-primary:hover {
+        background-color: #cf8e00;
+        border-color: #cf8e00;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-control-pill {
+        border-radius: 50px !important;
+        padding: 0.75rem 1.25rem !important;
+        border: 1px solid #ced4da !important;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+    .form-control-pill:focus {
+        border-color: #E5A124 !important;
+        box-shadow: 0 0 0 0.2rem rgba(229, 161, 36, 0.25) !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block 'content' %}
+<style>
+    body {
+        background-color: #f0f2f5;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container-fluid {
+        flex: 1;
+    }
+
+    .container-outline {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-bottom: 20px;
+        height: 100%;
+    }
+
+    .progress {
+        height: 15px;
+        cursor: pointer;
+    }
+
+    .small {
+        font-size: 0.875rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .row-full-height {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .col-full-height {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .col-md-4 {
+        margin-bottom: 20px;
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-actions .btn {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .header-actions .btn + .btn {
+        margin-left: 0.5rem;
+    }
+
+    .clickable {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .clickable:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row row-full-height">
+        <div class="col-md-4 col-full-height">
+            <div class="container-outline">
+                <div class="header-actions">
+                    <h4>Satin Silk</h4>
+                    <a href="{% url 'add_new_satin_silk' %}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-plus-lg"></i> Add New
+                    </a>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        {% for flower in flowers %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <a href="{% url 'restock_satin_silk' flower.pk %}" class="small clickable">{{ flower.color }}</a>
+                            <a href="{% url 'restock_satin_silk' flower.pk %}" class="small clickable">{{ flower.remaining_stock|floatformat:0 }}%</a>
+                        </div>
+                        <div class="progress mb-2" style="height: 15px;" onclick="location.href='{% url 'restock_satin_silk' flower.pk %}'">
+                            {% if flower.remaining_stock < 33 %}
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                 style="width: {{ flower.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ flower.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% elif flower.remaining_stock < 66 %}
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                 style="width: {{ flower.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ flower.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% else %}
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ flower.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ flower.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-full-height">
+            <div class="container-outline">
+                <div class="header-actions">
+                    <h4>Decorations</h4>
+                    <a href="{% url 'add_new_decorations' %}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-plus-lg"></i> Add New
+                    </a>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        {% for decoration in decorations %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <a href="{% url 'restock_decorations' decoration.pk %}" class="small clickable">{{ decoration.deco_name }}</a>
+                            <a href="{% url 'restock_decorations' decoration.pk %}" class="small clickable">{{ decoration.remaining_stock|floatformat:0 }}%</a>
+                        </div>
+                        <div class="progress mb-2" style="height: 15px;" onclick="location.href='{% url 'restock_decorations' decoration.pk %}'">
+                            {% if decoration.remaining_stock < 33 %}
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                 style="width: {{ decoration.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ decoration.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% elif decoration.remaining_stock < 66 %}
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                 style="width: {{ decoration.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ decoration.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% else %}
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ decoration.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ decoration.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-full-height">
+            <div class="container-outline">
+                <div class="header-actions">
+                    <h4>Materials</h4>
+                    <a href="{% url 'add_new_materials' %}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-plus-lg"></i> Add New
+                    </a>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        {% for material in wrapping_paper %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <a href="{% url 'restock_materials' material.pk %}" class="small clickable">{{ material.material_name }}</a>
+                            <a href="{% url 'restock_materials' material.pk %}" class="small clickable">{{ material.remaining_stock|floatformat:0 }}%</a>
+                        </div>
+                        <div class="progress mb-2" style="height: 15px;" onclick="location.href='{% url 'restock_materials' material.pk %}'">
+                            {% if material.remaining_stock < 33 %}
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                 style="width: {{ material.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ material.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% elif material.remaining_stock < 66 %}
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                 style="width: {{ material.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ material.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% else %}
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ material.remaining_stock|floatformat:0 }}%;"
+                                 aria-valuenow="{{ material.remaining_stock|floatformat:0 }}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block 'content' %}
+<style>
+    .order-page {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #343a40;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .order-details-container {
+        background-color: #343a40;
+        color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .order-details-container h2 {
+        color: #E5A124;
+    }
+
+    .order-details-container p {
+        margin: 5px 0;
+    }
+
+    .order-details-container .button-group {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .order-details-container .add-button, .order-details-container .dropdown-toggle {
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        color: #ffffff;
+        display: inline-block;
+    }
+
+    .order-details-container .add-button {
+        background-color: #28a745;
+    }
+
+    .order-details-container .add-button i {
+        margin-right: 5px;
+    }
+
+    .order-details-container .dropdown-toggle {
+        background-color: #007bff;
+        border: none;
+    }
+
+    .dropdown-menu {
+        background-color: #ffffff;
+        border: 1px solid #343a40;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        color: #343a40;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    h1, h2 {
+        color: #343a40;
+    }
+
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .order-table th, .order-table td {
+        border: 1px solid #343a40;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .order-table th {
+        background-color: #343a40;
+        color: #ffffff;
+    }
+
+    .order-table tbody tr:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+
+    .order-table tbody tr:nth-child(even) {
+        background-color: #ffffff;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-buttons a {
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .remove-button {
+        background-color: #dc3545;
+    }
+
+    .edit-button {
+        background-color: #ffc107;
+    }
+
+    .remove-button i, .edit-button i {
+        margin-right: 5px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: .25em .4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: .25rem;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+    }
+
+    .badge-primary {
+        background-color: #007bff;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+    }
+</style>
+
+<div class="order-page">
+    <h1>Order Details</h1>
+    <div class="order-details-container">
+        <p><strong>Order ID:</strong> {{ order.id }}</p>
+        <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+        <p><strong>Client ID:</strong> {{ order.client_id }}</p>
+        <p>
+            <strong>Order Status:</strong>
+            <span class="status-badge
+            {% if order.order_status == 'c' %}badge-success
+            {% elif order.order_status == 'i' %}badge-primary
+            {% elif order.order_status == 'x' %}badge-danger
+            {% endif %}">
+                {{ order.get_order_status_display }}
+            </span>
+        </p>
+        <h2>Summary</h2>
+        <p><strong>Order Total:</strong> {{ order.order_total }}</p>
+        <p><strong>Total Cost to Make:</strong> {{ order.total_cost_to_make }}</p>
+        <p><strong>Profit Made:</strong> {{ order.profit_made }}</p>
+    </div>
+    <h2>Order Lines</h2>
+    <table class="order-table">
+        <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Quantity</th>
+            <th>Decoration</th>
+            <th>Price</th>
+            <th>Cost to Make</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for line in order_lines %}
+        <tr>
+            <td>{{ line.product_id }}</td>
+            <td>{{ line.quantity }}</td>
+            <td>{{ line.deco_id }}</td>
+            <td>{{ line.price }}</td>
+            <td>{{ line.cost_to_make }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

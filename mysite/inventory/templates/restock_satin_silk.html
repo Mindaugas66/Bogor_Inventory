@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Restock Satin Silk{% endblock %}
+{% block 'content' %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    h2 {
+        color: #222529;
+    }
+
+    .btn-primary {
+        background-color: #E5A124;
+        border-color: #E5A124;
+    }
+
+    .btn-primary:hover {
+        background-color: #cc8e1d;
+        border-color: #cc8e1d;
+    }
+
+    .form-control:focus {
+        border-color: #E5A124;
+        box-shadow: 0 0 0 0.2rem rgba(229, 161, 36, 0.25);
+    }
+</style>
+<body>
+<div class="container mt-4">
+    <h2>Restock Satin Silk</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+</body>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% load static %}
+<html lang="en">
+<head>
+    <title>{% block title %}My Webshop{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            flex: 1;
+        }
+
+        .cover-photo {
+            background: url("{% static 'images/cover.png' %}") no-repeat center center;
+            background-size: cover;
+            color: black;
+            text-align: center;
+            padding: 12rem 0;
+            position: relative; /* This ensures the text box can be positioned absolutely within this div */
+        }
+
+        .text-box {
+            background: #DFDFD8;
+            padding: 2rem;
+            border-radius: 10px;
+            display: inline-block; /* Make sure the box is only as wide as its content */
+            position: absolute;
+            top: 50%; /* Center the box vertically */
+            left: 50%; /* Center the box horizontally */
+            transform: translate(-50%, -50%); /* Adjust position to be truly centered */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+        }
+
+        .footer {
+            background: #DFDFD8;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-search-container {
+            width: 300px;
+        }
+
+        .footer-search-form {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer-search-form .form-control {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .footer-search-form .btn {
+            white-space: nowrap;
+        }
+
+        .custom-navbar {
+            background-color: #DFDFD8; /* Change this to your desired background color */
+            color: white; /* Change this to your desired text color */
+        }
+
+        .custom-navbar .nav-link {
+            color: black; /* Change this to your desired link color */
+        }
+
+        .custom-navbar .nav-link:hover {
+            color: black; /* Change this to your desired hover link color */
+            transform: scale(1.1); /* Slightly increase the size of the link */
+            transition: transform 0.2s ease-in-out; /* Smooth transition effect */
+        }
+
+        .custom-navbar .navbar-brand {
+            color: white; /* Change this to your desired brand color */
+        }
+    </style>
+</head>
+<body>
+<div class="cover-photo">
+    <div class="text-box">
+        <a href="http://www.bogor.lt" style="text-decoration: none; color: inherit;">
+            <h1>Bogor.lt</h1>
+            <p>Management system</p>
+        </a>
+    </div>
+</div>
+<nav class="navbar navbar-expand-sm custom-navbar">
+    <div class="container-fluid">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link home" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link cars" href="#">Cars</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link userorders" href="#">My orders</a>
+            </li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <svg class="bi bi-person" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M13 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM3.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM8 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0z"
+                              clip-rule="evenodd"/>
+                    </svg>
+                    {{ user.get_username }}</a></li>
+            <li class="nav-item">
+                <form method="post" action="#">
+                    {% csrf_token %}
+                    <button class="btn btn-link nav-link" type="submit">
+                        <i class="fa fa-sign-out"></i> Logout
+                    </button>
+                </form>
+            </li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Register</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4 content-wrapper">
+    <div class="row">
+        <div class="col-sm">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'info' %}success{% endif %}"
+                 role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% block 'content' %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; GoodHood {{ year }}</p>
+    <div class="footer-search-container">
+        <form class="footer-search-form" action="#" method="get">
+            <input class="form-control me-2" name="query" type="text" placeholder="Search">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

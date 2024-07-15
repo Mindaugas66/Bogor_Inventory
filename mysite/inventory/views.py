@@ -1,11 +1,15 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Count
 import json
-from django.views.generic import DetailView
+
+from django.views import generic
 from django.contrib.auth.decorators import login_required
 import datetime
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from .models import SatinSilk, Decorations, Materials, Products, Clients, Orders, OrderLines
 from django.shortcuts import render
+from .forms import OrderForm, OrderLineFormSet, ClientForm, RestockSatinSilkForm, AddNewSatinSilkForm, \
+    RestockDecorationsForm, AddNewDecorationsForm, RestockMaterialsForm, AddNewMaterialsForm
 from django.core.paginator import Paginator
 
 
@@ -86,3 +90,137 @@ def orders(request):
         "orders": paged_orders,
     }
     return render(request, template_name="orders.html", context=context)
+
+
+def order_view(request, order_id):
+    order_instance = get_object_or_404(Orders, pk=order_id)
+    order_lines = OrderLines.objects.filter(order_id=order_instance)
+    context = {
+        "order": order_instance,
+        "order_lines": order_lines,
+    }
+    return render(request, template_name="order.html", context=context)
+
+
+class OrderDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Orders
+    success_url = "/orders/"
+    context_object_name = "order"
+    template_name = 'order_delete.html'
+
+
+@login_required(login_url='/accounts/login/')
+def new_order(request):
+    if request.method == 'POST':
+        client_form = ClientForm(request.POST)
+        order_form = OrderForm(request.POST)
+        formset = OrderLineFormSet(request.POST, instance=Orders())
+
+        if client_form.is_valid() and order_form.is_valid() and formset.is_valid():
+            client = client_form.save()
+            order = order_form.save(commit=False)
+            order.client_id = client
+            order.save()
+            order_lines = formset.save(commit=False)
+            for line in order_lines:
+                line.order_id = order
+                line.save()
+            return redirect('orders')
+    else:
+        client_form = ClientForm()
+        order_form = OrderForm()
+        formset = OrderLineFormSet(instance=Orders())
+
+    return render(request, 'new_order.html', {'client_form': client_form, 'order_form': order_form, 'formset': formset})
+
+
+@login_required(login_url='/accounts/login/')
+def edit_order(request, pk):
+    order = get_object_or_404(Orders, pk=pk)
+    if request.method == 'POST':
+        form = OrderForm(request.POST, instance=order)
+        formset = OrderLineFormSet(request.POST, instance=order)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect('orders')
+    else:
+        form = OrderForm(instance=order)
+        formset = OrderLineFormSet(instance=order)
+    return render(request, 'order_edit.html', {'form': form, 'formset': formset})
+
+
+@login_required(login_url='/accounts/login/')
+def inventory(request):
+    flowers = SatinSilk.objects.all()
+    decorations = Decorations.objects.all()
+    wrapping_paper = Materials.objects.all()
+    return render(request, 'inventory.html', {
+        'flowers': flowers,
+        'decorations': decorations,
+        'wrapping_paper': wrapping_paper
+    })
+
+
+def restock_satin_silk(request, pk):
+    satin_silk = get_object_or_404(SatinSilk, pk=pk)
+    if request.method == "POST":
+        form = RestockSatinSilkForm(request.POST, instance=satin_silk)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')  # Update with your inventory view name
+    else:
+        form = RestockSatinSilkForm(instance=satin_silk)
+    return render(request, 'restock_satin_silk.html', {'form': form})
+
+def add_new_satin_silk(request):
+    if request.method == "POST":
+        form = AddNewSatinSilkForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')  # Update with your inventory view name
+    else:
+        form = AddNewSatinSilkForm()
+    return render(request, 'add_new_satin_silk.html', {'form': form})
+
+def restock_decorations(request, pk):
+    decoration = get_object_or_404(Decorations, pk=pk)
+    if request.method == "POST":
+        form = RestockDecorationsForm(request.POST, instance=decoration)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')  # Update with your inventory view name
+    else:
+        form = RestockDecorationsForm(instance=decoration)
+    return render(request, 'restock_decorations.html', {'form': form})
+
+def add_new_decorations(request):
+    if request.method == "POST":
+        form = AddNewDecorationsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')  # Update with your inventory view name
+    else:
+        form = AddNewDecorationsForm()
+    return render(request, 'add_new_decorations.html', {'form': form})
+
+def restock_materials(request, pk):
+    material = get_object_or_404(Materials, pk=pk)
+    if request.method == "POST":
+        form = RestockMaterialsForm(request.POST, instance=material)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')  # Update with your inventory view name
+    else:
+        form = RestockMaterialsForm(instance=material)
+    return render(request, 'restock_materials.html', {'form': form})
+
+def add_new_materials(request):
+    if request.method == "POST":
+        form = AddNewMaterialsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('inventory')  # Update with your inventory view name
+    else:
+        form = AddNewMaterialsForm()
+    return render(request, 'add_new_materials.html', {'form': form})
